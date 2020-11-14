@@ -14,6 +14,7 @@ import androidx.compose.animation.transition
 import androidx.compose.desktop.DesktopMaterialTheme
 import androidx.compose.desktop.Window
 import androidx.compose.foundation.ScrollableColumn
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -36,10 +37,13 @@ import androidx.compose.material.Divider
 import androidx.compose.material.FloatingActionButton
 import androidx.compose.material.Icon
 import androidx.compose.material.MaterialTheme
+import androidx.compose.material.Switch
 import androidx.compose.material.Text
+import androidx.compose.material.darkColors
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Add
 import androidx.compose.material.icons.rounded.Search
+import androidx.compose.material.lightColors
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -61,12 +65,15 @@ fun main() {
         title = "DeskNotes",
         size = IntSize(960, 720),
     ) {
+        val darkTheme = remember { mutableStateOf(false) }
         val notes = remember { mutableStateOf(emptyList<Note>()) }
         val selectingColor = remember { mutableStateOf(false) }
         val selectedNote = remember { mutableStateOf<Note?>(null) }
 
-        DesktopMaterialTheme {
-            Row(modifier = Modifier.fillMaxSize()) {
+        DesktopMaterialTheme(
+            colors = if (darkTheme.value) darkColors() else lightColors()
+        ) {
+            Row(modifier = Modifier.fillMaxSize().background(color = MaterialTheme.colors.background)) {
                 // side bar
                 Column(
                     modifier = Modifier
@@ -81,6 +88,7 @@ fun main() {
                             style = TextStyle(
                                 fontWeight = FontWeight.Bold,
                                 fontSize = 18.sp,
+                                color = MaterialTheme.colors.onBackground,
                             ),
                         )
                         Spacer(modifier = Modifier.height(4.dp))
@@ -89,6 +97,7 @@ fun main() {
                             style = TextStyle(
                                 fontWeight = FontWeight.Bold,
                                 fontSize = 18.sp,
+                                color = MaterialTheme.colors.onBackground,
                             ),
                         )
                     }
@@ -169,6 +178,24 @@ fun main() {
                             }
                         }
                     }
+
+                    Spacer(modifier = Modifier.weight(1f))
+
+                    Column(modifier = Modifier.align(Alignment.CenterHorizontally)) {
+                        Text(
+                            text = "Dark mode",
+                            style = TextStyle(
+                                fontWeight = FontWeight.Bold,
+                                fontSize = 14.sp,
+                                color = Color.LightGray,
+                            ),
+                        )
+                        Switch(
+                            checked = darkTheme.value,
+                            onCheckedChange = { darkTheme.value = !darkTheme.value },
+                            modifier = Modifier.padding(top = 8.dp).align(Alignment.CenterHorizontally)
+                        )
+                    }
                 }
 
                 Divider(
@@ -224,6 +251,7 @@ fun main() {
                                     style = TextStyle(
                                         fontWeight = FontWeight.Bold,
                                         fontSize = 52.sp,
+                                        color = MaterialTheme.colors.onBackground,
                                     ),
                                 )
                                 Spacer(modifier = Modifier.height(16.dp))
