@@ -25,6 +25,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -39,24 +40,31 @@ import androidx.compose.material.Icon
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Switch
 import androidx.compose.material.Text
+import androidx.compose.material.TextField
 import androidx.compose.material.darkColors
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Add
 import androidx.compose.material.icons.rounded.Search
 import androidx.compose.material.lightColors
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.onActive
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.drawOpacity
-import androidx.compose.ui.drawLayer
+import androidx.compose.ui.draw.alpha
+import androidx.compose.ui.focus.ExperimentalFocus
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focusRequester
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
+@ExperimentalFocus
 @ExperimentalStdlibApi
 @ExperimentalAnimationApi
 @ExperimentalLayout
@@ -140,7 +148,7 @@ fun main() {
                         Icon(
                             Icons.Rounded.Add.copy(defaultWidth = 48.dp, defaultHeight = 48.dp),
                             tint = MaterialTheme.colors.onPrimary,
-                            modifier = Modifier.drawLayer(
+                            modifier = Modifier.graphicsLayer(
                                 rotationZ = transitionState[RotationPropKey],
                                 translationX = transitionState[TranslateXPropKey],
                                 translationY = transitionState[TranslateYPropKey],
@@ -159,15 +167,16 @@ fun main() {
                                 Button(
                                     onClick = {
                                         val newNote = Note(
-                                            content = "Note ${notes.value.size + 1}",
+                                            id = notes.value.size,
+                                            content = "",
                                             color = noteColor,
                                         )
                                         notes.value = buildList {
-                                            addAll(notes.value)
                                             add(newNote)
+                                            addAll(notes.value)
                                         }
                                         selectingColor.value = false
-                                        selectedNote.value = null
+                                        selectedNote.value = newNote
                                     },
                                     shape = MaterialTheme.shapes.small.copy(CornerSize(percent = 50)),
                                     colors = ButtonConstants.defaultButtonColors(
@@ -327,7 +336,7 @@ fun main() {
                                                         width = transitionState[WidthPropKey],
                                                         height = transitionState[HeightPropKey],
                                                     )
-                                                    .drawOpacity(transitionState[OpacityPropKey])
+                                                    .alpha(transitionState[OpacityPropKey])
                                                     .clickable {
                                                         if (selectedNote.value != note) {
                                                             selectedNote.value = note
@@ -342,10 +351,51 @@ fun main() {
                                                         .fillMaxSize()
                                                         .padding(24.dp)
                                                 ) {
-                                                    Text(
-                                                        text = note.content,
-                                                        style = MaterialTheme.typography.h6,
-                                                    )
+                                                    Crossfade(
+                                                        current = selectedNote.value == note,
+                                                    ) { isSelected ->
+                                                        if (isSelected) {
+                                                            val focusRequester = FocusRequester()
+                                                            TextField(
+                                                                value = note.content,
+                                                                textStyle = MaterialTheme.typography.h6,
+                                                                modifier = Modifier
+                                                                    .focusRequester(focusRequester)
+                                                                    .fillMaxWidth()
+                                                                    .padding(8.dp),
+                                                                label = {
+                                                                    Text(
+                                                                        "Enter note",
+                                                                        color = MaterialTheme.colors.onBackground
+                                                                    )
+                                                                },
+                                                                onTextInputStarted = {
+                                                                    focusRequester.freeFocus()
+                                                                },
+                                                                onValueChange = { newContent ->
+                                                                    val updatedNote = note.copy(content = newContent)
+                                                                    notes.value = notes.value.map {
+                                                                        if (it == note) {
+                                                                            updatedNote
+                                                                        } else {
+                                                                            it
+                                                                        }
+                                                                    }
+                                                                    selectedNote.value = updatedNote
+                                                                },
+                                                                backgroundColor = Color.Transparent
+                                                            )
+                                                            onActive {
+                                                                focusRequester.requestFocus()
+                                                            }
+                                                        } else {
+                                                            Text(
+                                                                text = note.content.ifBlank { "Note ${note.id + 1}" },
+                                                                style = MaterialTheme.typography.h6,
+                                                                overflow = TextOverflow.Ellipsis,
+                                                            )
+                                                        }
+                                                    }
                                                 }
                                             }
                                         }
@@ -360,7 +410,7 @@ fun main() {
     }
 }
 
-data class Note(val content: String, val color: Color)
+data class Note(val id: Int, val content: String, val color: Color)
 
 val NoteColors = listOf(
     Color(0xFFFECF7D),

@@ -2,8 +2,8 @@ import org.jetbrains.compose.compose
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
-    kotlin("jvm") version "1.4.10"
-    id("org.jetbrains.compose") version "0.1.0-m1-build62"
+    kotlin("jvm") version "1.4.20"
+    id("org.jetbrains.compose") version "0.3.0-build133"
     application
 }
 
@@ -13,9 +13,18 @@ repositories {
     maven { url = uri("https://maven.pkg.jetbrains.space/public/p/compose/dev") }
 }
 
+kotlin {
+    sourceSets {
+        named("main") {
+            dependencies {
+                implementation(compose.desktop.currentOs)
+            }
+        }
+    }
+}
+
 dependencies {
     testImplementation(kotlin("test-junit"))
-    implementation(compose.desktop.all)
 }
 
 tasks.test {
