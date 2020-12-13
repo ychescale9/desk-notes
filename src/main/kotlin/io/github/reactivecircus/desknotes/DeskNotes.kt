@@ -116,23 +116,15 @@ fun main() {
                         transitionDefinition<Boolean> {
                             state(false) {
                                 this[RotationPropKey] = 0f
-                                this[TranslateXPropKey] = 0f
-                                this[TranslateYPropKey] = 0f
                             }
                             state(true) {
                                 this[RotationPropKey] = 45f
-                                this[TranslateXPropKey] = 4.5f
-                                this[TranslateYPropKey] = -2f
                             }
                             transition(false to true) {
                                 RotationPropKey using tween()
-                                TranslateXPropKey using tween()
-                                TranslateYPropKey using tween()
                             }
                             transition(true to false) {
                                 RotationPropKey using tween()
-                                TranslateXPropKey using tween()
-                                TranslateYPropKey using tween()
                             }
                         }
                     }
@@ -149,9 +141,7 @@ fun main() {
                             Icons.Rounded.Add.copy(defaultWidth = 48.dp, defaultHeight = 48.dp),
                             tint = MaterialTheme.colors.onPrimary,
                             modifier = Modifier.graphicsLayer(
-                                rotationZ = transitionState[RotationPropKey],
-                                translationX = transitionState[TranslateXPropKey],
-                                translationY = transitionState[TranslateYPropKey],
+                                rotationZ = transitionState[RotationPropKey]
                             )
                         )
                     }
@@ -422,8 +412,6 @@ val NoteColors = listOf(
 
 
 private val RotationPropKey = FloatPropKey()
-private val TranslateXPropKey = FloatPropKey()
-private val TranslateYPropKey = FloatPropKey()
 
 private val WidthPropKey = DpPropKey()
 private val HeightPropKey = DpPropKey()
