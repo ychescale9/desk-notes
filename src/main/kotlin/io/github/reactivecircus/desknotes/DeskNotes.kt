@@ -38,7 +38,6 @@ import androidx.compose.material.Divider
 import androidx.compose.material.FloatingActionButton
 import androidx.compose.material.Icon
 import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Switch
 import androidx.compose.material.Text
 import androidx.compose.material.TextField
 import androidx.compose.material.darkColors
@@ -180,21 +179,11 @@ fun main() {
 
                     Spacer(modifier = Modifier.weight(1f))
 
-                    Column(modifier = Modifier.align(Alignment.CenterHorizontally)) {
-                        Text(
-                            text = "Dark mode",
-                            style = TextStyle(
-                                fontWeight = FontWeight.Bold,
-                                fontSize = 14.sp,
-                                color = Color.LightGray,
-                            ),
-                        )
-                        Switch(
-                            checked = darkTheme.value,
-                            onCheckedChange = { darkTheme.value = !darkTheme.value },
-                            modifier = Modifier.padding(top = 8.dp).align(Alignment.CenterHorizontally)
-                        )
-                    }
+                    NightModeSwitch(
+                        isOn = darkTheme.value,
+                        onChange = { darkTheme.value = !darkTheme.value },
+                        modifier = Modifier.padding(top = 8.dp).align(Alignment.CenterHorizontally),
+                    )
                 }
 
                 Divider(
