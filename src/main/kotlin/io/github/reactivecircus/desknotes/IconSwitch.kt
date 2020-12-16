@@ -44,8 +44,10 @@ import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.platform.AmbientDensity
 import androidx.compose.ui.platform.AmbientLayoutDirection
 import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
+import kotlin.math.roundToInt
 
 /**
  * An IconSwitch is a two state toggleable component with an icon inside the thumb that provides on/off like options.
@@ -220,7 +222,7 @@ private fun BoxScope.SwitchImpl(
         elevation = elevation,
         modifier = Modifier
             .align(Alignment.CenterStart)
-            .offset(x = { thumbValue.value })
+            .offset { IntOffset(x = thumbValue.value.roundToInt(), y = 0) }
             .indication(
                 interactionState = interactionState,
                 indication = rememberRipple(bounded = false, radius = ThumbRippleRadius)

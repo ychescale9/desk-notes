@@ -51,9 +51,8 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
-import androidx.compose.ui.focus.ExperimentalFocus
-import androidx.compose.ui.focus.FocusRequester
-import androidx.compose.ui.focusRequester
+import androidx.compose.ui.focus.FocusReference
+import androidx.compose.ui.focus.focusReference
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.text.TextStyle
@@ -63,7 +62,6 @@ import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
-@ExperimentalFocus
 @ExperimentalStdlibApi
 @ExperimentalAnimationApi
 @ExperimentalLayout
@@ -334,12 +332,12 @@ fun main() {
                                                         current = selectedNote.value == note,
                                                     ) { isSelected ->
                                                         if (isSelected) {
-                                                            val focusRequester = FocusRequester()
+                                                            val focusReference = FocusReference()
                                                             TextField(
                                                                 value = note.content,
                                                                 textStyle = MaterialTheme.typography.h6,
                                                                 modifier = Modifier
-                                                                    .focusRequester(focusRequester)
+                                                                    .focusReference(focusReference)
                                                                     .fillMaxWidth()
                                                                     .padding(8.dp),
                                                                 label = {
@@ -349,7 +347,7 @@ fun main() {
                                                                     )
                                                                 },
                                                                 onTextInputStarted = {
-                                                                    focusRequester.freeFocus()
+                                                                    focusReference.freeFocus()
                                                                 },
                                                                 onValueChange = { newContent ->
                                                                     val updatedNote = note.copy(content = newContent)
@@ -365,7 +363,7 @@ fun main() {
                                                                 backgroundColor = Color.Transparent
                                                             )
                                                             onActive {
-                                                                focusRequester.requestFocus()
+                                                                focusReference.requestFocus()
                                                             }
                                                         } else {
                                                             Text(
