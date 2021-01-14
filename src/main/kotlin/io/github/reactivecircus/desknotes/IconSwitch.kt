@@ -21,7 +21,7 @@ import androidx.compose.material.FractionalThreshold
 import androidx.compose.material.Icon
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
-import androidx.compose.material.SwipeableConstants
+import androidx.compose.material.SwipeableDefaults
 import androidx.compose.material.SwipeableState
 import androidx.compose.material.rememberSwipeableState
 import androidx.compose.material.ripple.rememberRipple
@@ -269,7 +269,7 @@ private fun DrawScope.drawTrack(
 private fun <T : Any> rememberSwipeableStateFor(
     value: T,
     onValueChange: (T) -> Unit,
-    animationSpec: AnimationSpec<Float> = SwipeableConstants.DefaultAnimationSpec
+    animationSpec: AnimationSpec<Float> = SwipeableDefaults.AnimationSpec
 ): SwipeableState<T> {
     val swipeableState = rememberSwipeableState(
         initialValue = value,

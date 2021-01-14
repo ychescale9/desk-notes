@@ -32,7 +32,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CornerSize
 import androidx.compose.material.Button
-import androidx.compose.material.ButtonConstants
+import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.Card
 import androidx.compose.material.Divider
 import androidx.compose.material.FloatingActionButton
@@ -51,8 +51,8 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
-import androidx.compose.ui.focus.FocusReference
-import androidx.compose.ui.focus.focusReference
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.text.TextStyle
@@ -166,7 +166,7 @@ fun main() {
                                         selectedNote.value = newNote
                                     },
                                     shape = MaterialTheme.shapes.small.copy(CornerSize(percent = 50)),
-                                    colors = ButtonConstants.defaultButtonColors(
+                                    colors = ButtonDefaults.buttonColors(
                                         backgroundColor = noteColor
                                     ),
                                     modifier = Modifier.padding(8.dp).size(24.dp)
@@ -332,12 +332,12 @@ fun main() {
                                                         current = selectedNote.value == note,
                                                     ) { isSelected ->
                                                         if (isSelected) {
-                                                            val focusReference = FocusReference()
+                                                            val focusRequester = FocusRequester()
                                                             TextField(
                                                                 value = note.content,
                                                                 textStyle = MaterialTheme.typography.h6,
                                                                 modifier = Modifier
-                                                                    .focusReference(focusReference)
+                                                                    .focusRequester(focusRequester)
                                                                     .fillMaxWidth()
                                                                     .padding(8.dp),
                                                                 label = {
@@ -347,7 +347,7 @@ fun main() {
                                                                     )
                                                                 },
                                                                 onTextInputStarted = {
-                                                                    focusReference.freeFocus()
+                                                                    focusRequester.freeFocus()
                                                                 },
                                                                 onValueChange = { newContent ->
                                                                     val updatedNote = note.copy(content = newContent)
@@ -363,7 +363,7 @@ fun main() {
                                                                 backgroundColor = Color.Transparent
                                                             )
                                                             onActive {
-                                                                focusReference.requestFocus()
+                                                                focusRequester.requestFocus()
                                                             }
                                                         } else {
                                                             Text(
